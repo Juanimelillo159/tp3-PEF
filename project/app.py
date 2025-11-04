@@ -1,3 +1,13 @@
+"""
+Streamlit GUI for the PhotoLab Express application.
+
+This module provides the main user interface for the PhotoLab Express application.
+It allows users to upload a folder of images, select a variety of image processing
+filters, and run a batch processing pipeline. The processed images are displayed
+in the UI, and the results, including AI-powered classifications, are available
+for download as a CSV file. The processed images are also saved to disk,
+organized into folders based on their classification.
+"""
 import streamlit as st
 import pandas as pd
 from pathlib import Path
@@ -19,9 +29,10 @@ if uploaded_files:
             f.write(uploaded_file.getbuffer())
         image_paths.append(image_path)
 
-
     # --- 2. Display Thumbnails ---
-    st.image([str(p) for p in image_paths], width=100, caption=[p.name for p in image_paths])
+    st.image(
+        [str(p) for p in image_paths], width=100, caption=[p.name for p in image_paths]
+    )
 
     # --- 3. Filter Selection ---
     filter_options = ["Sobel", "Canny", "Gaussian Blur", "Sharpen", "Random Hue Shift"]
@@ -34,7 +45,9 @@ if uploaded_files:
     if st.button("Process"):
         with st.spinner("Processing images..."):
             # --- Run Pipeline ---
-            results = pipeline.run_pipeline(image_paths, selected_filters, face_detection)
+            results = pipeline.run_pipeline(
+                image_paths, selected_filters, face_detection
+            )
 
             # --- AI Classification ---
             raw_images = [io_utils.load_image(p) for p in image_paths]
@@ -56,14 +69,21 @@ if uploaded_files:
 
             if images_with_faces:
                 st.subheader("Images with Detected Faces")
-                st.image([io_utils.cv2_to_pil(img) for img in images_with_faces], width=200)
+                st.image(
+                    [io_utils.cv2_to_pil(img) for img in images_with_faces], width=200
+                )
 
             if images_without_faces:
                 st.subheader("Images without Detected Faces")
-                st.image([io_utils.cv2_to_pil(img) for img in images_without_faces], width=200)
+                st.image(
+                    [io_utils.cv2_to_pil(img) for img in images_without_faces],
+                    width=200,
+                )
 
             # --- Export CSV ---
-            st.info("Note: The AI classification is based on the CLIP model by OpenAI. The labels are more accurate but may still produce unexpected results.")
+            st.info(
+                "Note: The AI classification is based on the CLIP model by OpenAI. The labels are more accurate but may still produce unexpected results."
+            )
             metrics = {
                 "filename": [p.name for p in image_paths],
                 "classification": [c[0] for c in classifications],
@@ -82,7 +102,12 @@ if uploaded_files:
             output_dir = Path("output")
             output_dir.mkdir(exist_ok=True)
             for i, img in enumerate(processed_images_for_saving):
-                classification = classifications[i][0].replace("a photo of a ", "").replace("an ", "").replace("a ", "")
+                classification = (
+                    classifications[i][0]
+                    .replace("a photo of a ", "")
+                    .replace("an ", "")
+                    .replace("a ", "")
+                )
                 category_dir = output_dir / classification
                 category_dir.mkdir(exist_ok=True)
                 io_utils.save_image(img, category_dir / image_paths[i].name)

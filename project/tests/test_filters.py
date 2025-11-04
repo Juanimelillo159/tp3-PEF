@@ -9,6 +9,7 @@ TEST_IMAGE_PATH = Path("project/data/test_image.png")
 GOLDEN_IMAGE_DIR = Path("project/data/golden_images")
 GOLDEN_IMAGE_DIR.mkdir(exist_ok=True)
 
+
 def test_apply_sobel():
     """Tests the Sobel filter."""
     image = io_utils.load_image(TEST_IMAGE_PATH)
@@ -22,6 +23,7 @@ def test_apply_sobel():
     golden_image = io_utils.load_image(golden_image_path)
     assert (filtered_image == golden_image).all()
 
+
 def test_apply_random_hue_shift():
     """Tests the random hue shift filter."""
     image = io_utils.load_image(Path("project/data/color_test_image.png"))
@@ -32,6 +34,7 @@ def test_apply_random_hue_shift():
 
     # Check that the image is not the same
     assert not (image == filtered_image).all()
+
 
 def test_apply_canny():
     """Tests the Canny filter."""
@@ -46,6 +49,7 @@ def test_apply_canny():
     golden_image = io_utils.load_image(golden_image_path)
     assert (filtered_image == golden_image).all()
 
+
 def test_apply_gaussian_blur():
     """Tests the Gaussian blur filter."""
     image = io_utils.load_image(TEST_IMAGE_PATH)
@@ -58,6 +62,7 @@ def test_apply_gaussian_blur():
 
     golden_image = io_utils.load_image(golden_image_path)
     assert (filtered_image == golden_image).all()
+
 
 def test_apply_sharpen():
     """Tests the sharpen filter."""
