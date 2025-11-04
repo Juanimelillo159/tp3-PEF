@@ -16,12 +16,17 @@ def process_image(image_path, selected_filters, face_detection):
             image = filters.apply_gaussian_blur(image)
         elif filter_name == "Sharpen":
             image = filters.apply_sharpen(image)
+        elif filter_name == "Random Hue Shift":
+            image = filters.apply_random_hue_shift(image)
 
     # Perform face detection if enabled
+    faces_detected = False
     if face_detection:
-        image, _ = detect.detect_faces(image)
+        image, faces = detect.detect_faces(image)
+        if len(faces) > 0:
+            faces_detected = True
 
-    return image
+    return image, faces_detected
 
 def _process_image_wrapper(args):
     """Helper function to unpack arguments for process_image."""

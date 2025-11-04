@@ -24,7 +24,7 @@ if uploaded_files:
     st.image([str(p) for p in image_paths], width=100, caption=[p.name for p in image_paths])
 
     # --- 3. Filter Selection ---
-    filter_options = ["Sobel", "Canny", "Gaussian Blur", "Sharpen"]
+    filter_options = ["Sobel", "Canny", "Gaussian Blur", "Sharpen", "Random Hue Shift"]
     selected_filters = st.multiselect("Select filters:", filter_options)
 
     # --- 4. Face Detection ---
@@ -34,7 +34,7 @@ if uploaded_files:
     if st.button("Process"):
         with st.spinner("Processing images..."):
             # --- Run Pipeline ---
-            processed_images = pipeline.run_pipeline(image_paths, selected_filters, face_detection)
+            results = pipeline.run_pipeline(image_paths, selected_filters, face_detection)
 
             # --- AI Classification ---
             raw_images = [io_utils.load_image(p) for p in image_paths]
@@ -42,9 +42,28 @@ if uploaded_files:
 
             # --- Display Results ---
             st.header("Processed Images")
-            st.image([io_utils.cv2_to_pil(img) for img in processed_images], width=200)
+
+            images_with_faces = []
+            images_without_faces = []
+            processed_images_for_saving = []
+
+            for img, faces_detected in results:
+                processed_images_for_saving.append(img)
+                if faces_detected:
+                    images_with_faces.append(img)
+                else:
+                    images_without_faces.append(img)
+
+            if images_with_faces:
+                st.subheader("Images with Detected Faces")
+                st.image([io_utils.cv2_to_pil(img) for img in images_with_faces], width=200)
+
+            if images_without_faces:
+                st.subheader("Images without Detected Faces")
+                st.image([io_utils.cv2_to_pil(img) for img in images_without_faces], width=200)
 
             # --- Export CSV ---
+            st.info("Note: The AI classification is based on a general-purpose model (MobileNetV3) and may produce unexpected labels. It's for demonstration purposes.")
             metrics = {
                 "filename": [p.name for p in image_paths],
                 "classification_top1": [c[0] for c in classifications],
@@ -63,7 +82,7 @@ if uploaded_files:
             # --- Save filtered images ---
             output_dir = Path("output")
             output_dir.mkdir(exist_ok=True)
-            for i, img in enumerate(processed_images):
+            for i, img in enumerate(processed_images_for_saving):
                 io_utils.save_image(img, output_dir / image_paths[i].name)
 
             st.success("Processing complete!")
