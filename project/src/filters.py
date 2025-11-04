@@ -30,7 +30,6 @@ def apply_sharpen(image):
     kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
     return cv2.filter2D(image, -1, kernel)
 
-@memoize
 def apply_random_hue_shift(image):
     """Applies a random hue shift to an image."""
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)

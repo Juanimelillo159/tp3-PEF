@@ -63,11 +63,10 @@ if uploaded_files:
                 st.image([io_utils.cv2_to_pil(img) for img in images_without_faces], width=200)
 
             # --- Export CSV ---
-            st.info("Note: The AI classification is based on a general-purpose model (MobileNetV3) and may produce unexpected labels. It's for demonstration purposes.")
+            st.info("Note: The AI classification is based on the CLIP model by OpenAI. The labels are more accurate but may still produce unexpected results.")
             metrics = {
                 "filename": [p.name for p in image_paths],
-                "classification_top1": [c[0] for c in classifications],
-                "classification_top3": [", ".join(c) for c in classifications],
+                "classification": [c[0] for c in classifications],
             }
             df = pd.DataFrame(metrics)
             st.dataframe(df)
@@ -83,6 +82,9 @@ if uploaded_files:
             output_dir = Path("output")
             output_dir.mkdir(exist_ok=True)
             for i, img in enumerate(processed_images_for_saving):
-                io_utils.save_image(img, output_dir / image_paths[i].name)
+                classification = classifications[i][0].replace("a photo of a ", "").replace("an ", "").replace("a ", "")
+                category_dir = output_dir / classification
+                category_dir.mkdir(exist_ok=True)
+                io_utils.save_image(img, category_dir / image_paths[i].name)
 
             st.success("Processing complete!")

@@ -1,37 +1,28 @@
-import torch
-import torchvision.transforms as T
-from torchvision.models import mobilenet_v3_small, MobileNet_V3_Small_Weights
 from PIL import Image
+from transformers import CLIPProcessor, CLIPModel
 
-# Load the pre-trained MobileNetV3 model
-weights = MobileNet_V3_Small_Weights.DEFAULT
-model = mobilenet_v3_small(weights=weights)
-model.eval()
+# Load the pre-trained CLIP model
+model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
-# Define the image transformations
-preprocess = T.Compose([
-    T.Resize(256),
-    T.CenterCrop(224),
-    T.ToTensor(),
-    T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-])
+# Define the custom labels
+LABELS = ["a photo of a person", "a photo of a building", "an abstract drawing", "other"]
 
 def classify_batch(images):
-    """Classifies a batch of images using MobileNetV3."""
-    # Preprocess the images
-    batch = torch.stack([preprocess(Image.fromarray(image)) for image in images])
+    """Classifies a batch of images using CLIP."""
+
+    # Preprocess the images and labels
+    inputs = processor(text=LABELS, images=[Image.fromarray(image) for image in images], return_tensors="pt", padding=True)
 
     # Make predictions
-    with torch.no_grad():
-        predictions = model(batch)
+    outputs = model(**inputs)
+    logits_per_image = outputs.logits_per_image
 
-    # Get the top-k predictions
-    top3 = torch.topk(predictions, 3)
+    # Get the top prediction for each image
+    probs = logits_per_image.softmax(dim=1)
+    top_predictions = probs.argmax(dim=1)
 
     # Decode the predictions
-    results = []
-    for i in range(len(images)):
-        labels = [weights.meta["categories"][j] for j in top3.indices[i]]
-        results.append(labels)
+    results = [[LABELS[prediction.item()]] for prediction in top_predictions]
 
     return results

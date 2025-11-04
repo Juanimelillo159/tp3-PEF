@@ -22,6 +22,17 @@ def test_apply_sobel():
     golden_image = io_utils.load_image(golden_image_path)
     assert (filtered_image == golden_image).all()
 
+def test_apply_random_hue_shift():
+    """Tests the random hue shift filter."""
+    image = io_utils.load_image(Path("project/data/color_test_image.png"))
+    filtered_image = filters.apply_random_hue_shift(image)
+
+    # Check that the image has the same shape
+    assert image.shape == filtered_image.shape
+
+    # Check that the image is not the same
+    assert not (image == filtered_image).all()
+
 def test_apply_canny():
     """Tests the Canny filter."""
     image = io_utils.load_image(TEST_IMAGE_PATH)
