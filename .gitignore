@@ -1,0 +1,19 @@
+# Archivos de cache y compilados de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entornos virtuales
+venv/
+env/
+
+# Archivos temporales y de logs de la aplicación
+cache/
+temp_images/
+streamlit.log
+output/
+
+# Archivos de configuración de IDEs
+.vscode/
+.idea/
