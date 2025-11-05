@@ -1,8 +1,8 @@
 """
-Caching utilities for the application.
+Utilidades de caché para la aplicación.
 
-This module provides a simple caching mechanism using the `diskcache` library
-to memoize the results of expensive function calls.
+Este módulo proporciona un mecanismo de caché simple utilizando la biblioteca `diskcache`
+para memoizar los resultados de llamadas a funciones costosas.
 """
 from diskcache import Cache
 
@@ -11,18 +11,18 @@ cache = Cache("./cache")
 
 def memoize(func):
     """
-    A decorator to memoize function calls using diskcache.
+    Un decorador para memoizar llamadas a funciones usando diskcache.
 
     Args:
-        func (function): The function to be memoized.
+        func (function): La función a ser memoizada.
 
     Returns:
-        function: The wrapped function.
+        function: La función envuelta.
     """
 
     def wrapper(*args, **kwargs):
         """
-        The wrapper function that implements the caching logic.
+        La función envoltorio que implementa la lógica de caché.
         """
         # Create a cache key from the function name, args, and kwargs
         key = (func.__name__, args, frozenset(kwargs.items()))

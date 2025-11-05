@@ -1,9 +1,9 @@
 """
-Machine learning models for image classification.
+Modelos de aprendizaje automático para la clasificación de imágenes.
 
-This module provides functions for classifying images using pre-trained
-machine learning models. It currently uses the CLIP model from OpenAI
-to classify images based on a set of custom text labels.
+Este módulo proporciona funciones para clasificar imágenes utilizando modelos de
+aprendizaje automático pre-entrenados. Actualmente utiliza el modelo CLIP de OpenAI
+para clasificar imágenes basándose en un conjunto de etiquetas de texto personalizadas.
 """
 from PIL import Image
 from transformers import CLIPProcessor, CLIPModel
@@ -23,14 +23,14 @@ LABELS = [
 
 def classify_batch(images):
     """
-    Classifies a batch of images using the CLIP model.
+    Clasifica un lote de imágenes utilizando el modelo CLIP.
 
     Args:
-        images (list): A list of images as numpy arrays.
+        images (list): Una lista de imágenes como arrays de numpy.
 
     Returns:
-        list: A list of lists, where each inner list contains the top
-              classification label for the corresponding image.
+        list: Una lista de listas, donde cada lista interna contiene la etiqueta
+              de clasificación superior para la imagen correspondiente.
     """
 
     # Preprocess the images and labels

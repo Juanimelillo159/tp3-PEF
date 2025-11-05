@@ -1,9 +1,9 @@
 """
-Object detection and color analysis functions.
+Funciones de detección de objetos y análisis de color.
 
-This module provides functions for detecting objects in images, such as faces,
-and for analyzing the color composition of images, such as finding the
-dominant colors.
+Este módulo proporciona funciones para detectar objetos en imágenes, como rostros,
+y para analizar la composición de color de las imágenes, como encontrar los
+colores dominantes.
 """
 import cv2
 import numpy as np
@@ -19,14 +19,14 @@ face_cascade = cv2.CascadeClassifier(
 @memoize
 def detect_faces(image):
     """
-    Detects faces in an image using a Haar cascade.
+    Detecta rostros en una imagen usando una cascada de Haar.
 
     Args:
-        image (numpy.ndarray): The input image.
+        image (numpy.ndarray): La imagen de entrada.
 
     Returns:
-        tuple: A tuple containing the image with rectangles drawn around the
-               detected faces and a list of the detected faces.
+        tuple: Una tupla que contiene la imagen con rectángulos dibujados alrededor de los
+               rostros detectados y una lista de los rostros detectados.
     """
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, 1.1, 4)
@@ -41,14 +41,14 @@ def detect_faces(image):
 @memoize
 def get_dominant_colors(image, k=5):
     """
-    Finds the dominant colors in an image using k-means clustering.
+    Encuentra los colores dominantes en una imagen usando k-means clustering.
 
     Args:
-        image (numpy.ndarray): The input image.
-        k (int, optional): The number of dominant colors to find. Defaults to 5.
+        image (numpy.ndarray): La imagen de entrada.
+        k (int, optional): El número de colores dominantes a encontrar. Por defecto es 5.
 
     Returns:
-        numpy.ndarray: An array of the dominant colors.
+        numpy.ndarray: Un array de los colores dominantes.
     """
     # Reshape the image to be a list of pixels
     pixels = image.reshape(-1, 3)

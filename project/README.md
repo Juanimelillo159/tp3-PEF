@@ -1,22 +1,22 @@
 # PhotoLab Express
 
-This application allows you to apply filters and run face detection on a batch of images.
+Esta aplicación te permite aplicar filtros y ejecutar detección de rostros en un lote de imágenes.
 
-## How to use
+## Cómo usar
 
-1. Install the dependencies: `pip install -r requirements.txt`
-2. Run the application: `streamlit run app.py`
-3. Drag and drop a folder with images.
-4. Select the filters and other options.
-5. Click "Process" to start the batch processing.
-6. The results will be saved in a CSV file.
+1. Instala las dependencias: `pip install -r requirements.txt`
+2. Ejecuta la aplicación: `streamlit run app.py`
+3. Arrastra y suelta una carpeta con imágenes.
+4. Selecciona los filtros y otras opciones.
+5. Haz clic en "Procesar" para iniciar el procesamiento por lotes.
+6. Los resultados se guardarán en las carpetas correspondientes y se podrá descargar un archivo CSV.
 
-## Profiling Results
+## Resultados del Profiling
 
-Profiling was performed using `cProfile` and `snakeviz`.
+El profiling se realizó utilizando `cProfile` y `snakeviz`.
 
 ```bash
 python -m cProfile -o profile.out app.py
 ```
 
-The results show that the most time-consuming operations are the image processing filters, especially when applied to large images. The use of a cache significantly improves performance on subsequent runs with the same images and parameters.
+Los resultados muestran que las operaciones que consumen más tiempo son los filtros de procesamiento de imágenes, especialmente cuando se aplican a imágenes grandes. El uso de una caché mejora significativamente el rendimiento en ejecuciones posteriores con las mismas imágenes y parámetros.

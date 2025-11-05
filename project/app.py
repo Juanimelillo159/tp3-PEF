@@ -1,12 +1,12 @@
 """
-Streamlit GUI for the PhotoLab Express application.
+Interfaz gráfica de Streamlit para la aplicación PhotoLab Express.
 
-This module provides the main user interface for the PhotoLab Express application.
-It allows users to upload a folder of images, select a variety of image processing
-filters, and run a batch processing pipeline. The processed images are displayed
-in the UI, and the results, including AI-powered classifications, are available
-for download as a CSV file. The processed images are also saved to disk,
-organized into folders based on their classification.
+Este módulo proporciona la interfaz de usuario principal para la aplicación PhotoLab Express.
+Permite a los usuarios cargar una carpeta de imágenes, seleccionar una variedad de filtros
+de procesamiento de imágenes y ejecutar un pipeline de procesamiento por lotes. Las imágenes
+procesadas se muestran en la interfaz de usuario y los resultados, incluidas las clasificaciones
+impulsadas por IA, están disponibles para descargar como un archivo CSV. Las imágenes
+procesadas también se guardan en el disco, organizadas en carpetas según su clasificación.
 """
 import streamlit as st
 import pandas as pd
@@ -16,7 +16,7 @@ from src import pipeline, io_utils, ml
 st.title("PhotoLab Express")
 
 # --- 1. File Upload ---
-uploaded_files = st.file_uploader("Choose images", accept_multiple_files=True)
+uploaded_files = st.file_uploader("Elige las imágenes", accept_multiple_files=True)
 
 if uploaded_files:
     # Save uploaded files to a temporary directory
@@ -36,14 +36,14 @@ if uploaded_files:
 
     # --- 3. Filter Selection ---
     filter_options = ["Sobel", "Canny", "Gaussian Blur", "Sharpen", "Random Hue Shift"]
-    selected_filters = st.multiselect("Select filters:", filter_options)
+    selected_filters = st.multiselect("Selecciona los filtros:", filter_options)
 
     # --- 4. Face Detection ---
-    face_detection = st.checkbox("Detect faces")
+    face_detection = st.checkbox("Detectar rostros")
 
     # --- 5. Processing ---
-    if st.button("Process"):
-        with st.spinner("Processing images..."):
+    if st.button("Procesar"):
+        with st.spinner("Procesando imágenes..."):
             # --- Run Pipeline ---
             results = pipeline.run_pipeline(
                 image_paths, selected_filters, face_detection
@@ -54,7 +54,7 @@ if uploaded_files:
             classifications = ml.classify_batch(raw_images)
 
             # --- Display Results ---
-            st.header("Processed Images")
+            st.header("Imágenes Procesadas")
 
             images_with_faces = []
             images_without_faces = []
@@ -68,13 +68,13 @@ if uploaded_files:
                     images_without_faces.append(img)
 
             if images_with_faces:
-                st.subheader("Images with Detected Faces")
+                st.subheader("Imágenes con Rostros Detectados")
                 st.image(
                     [io_utils.cv2_to_pil(img) for img in images_with_faces], width=200
                 )
 
             if images_without_faces:
-                st.subheader("Images without Detected Faces")
+                st.subheader("Imágenes sin Rostros Detectados")
                 st.image(
                     [io_utils.cv2_to_pil(img) for img in images_without_faces],
                     width=200,
@@ -82,7 +82,7 @@ if uploaded_files:
 
             # --- Export CSV ---
             st.info(
-                "Note: The AI classification is based on the CLIP model by OpenAI. The labels are more accurate but may still produce unexpected results."
+                "Nota: La clasificación por IA se basa en el modelo CLIP de OpenAI. Las etiquetas son más precisas pero aún pueden producir resultados inesperados."
             )
             metrics = {
                 "filename": [p.name for p in image_paths],
@@ -92,7 +92,7 @@ if uploaded_files:
             st.dataframe(df)
 
             st.download_button(
-                label="Download data as CSV",
+                label="Descargar datos como CSV",
                 data=df.to_csv().encode("utf-8"),
                 file_name="photolab_express_metrics.csv",
                 mime="text/csv",
@@ -112,4 +112,4 @@ if uploaded_files:
                 category_dir.mkdir(exist_ok=True)
                 io_utils.save_image(img, category_dir / image_paths[i].name)
 
-            st.success("Processing complete!")
+            st.success("¡Procesamiento completo!")

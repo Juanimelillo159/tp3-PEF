@@ -1,9 +1,9 @@
 """
-I/O and utility functions for image processing.
+Funciones de E/S y utilidades para el procesamiento de imágenes.
 
-This module provides a set of utility functions for handling image files,
-including loading, saving, and hashing images, as well as converting
-between different image formats.
+Este módulo proporciona un conjunto de funciones de utilidad para manejar archivos de imagen,
+incluyendo la carga, guardado y hashing de imágenes, así como la conversión
+entre diferentes formatos de imagen.
 """
 import hashlib
 from pathlib import Path
@@ -14,62 +14,62 @@ from PIL import Image
 
 def load_image(image_path):
     """
-    Loads an image from a file path.
+    Carga una imagen desde una ruta de archivo.
 
     Args:
-        image_path (str): The path to the image file.
+        image_path (str): La ruta al archivo de imagen.
 
     Returns:
-        numpy.ndarray: The loaded image.
+        numpy.ndarray: La imagen cargada.
     """
     return cv2.imread(str(image_path))
 
 
 def save_image(image, save_path):
     """
-    Saves an image to a file path.
+    Guarda una imagen en una ruta de archivo.
 
     Args:
-        image (numpy.ndarray): The image to be saved.
-        save_path (str): The path to save the image to.
+        image (numpy.ndarray): La imagen a guardar.
+        save_path (str): La ruta donde guardar la imagen.
     """
     cv2.imwrite(str(save_path), image)
 
 
 def get_image_hash(image):
     """
-    Calculates the SHA256 hash of an image.
+    Calcula el hash SHA256 de una imagen.
 
     Args:
-        image (numpy.ndarray): The input image.
+        image (numpy.ndarray): La imagen de entrada.
 
     Returns:
-        str: The SHA256 hash of the image.
+        str: El hash SHA256 de la imagen.
     """
     return hashlib.sha256(image.tobytes()).hexdigest()
 
 
 def pil_to_cv2(pil_image):
     """
-    Converts a PIL image to an OpenCV image.
+    Convierte una imagen PIL a una imagen de OpenCV.
 
     Args:
-        pil_image (PIL.Image.Image): The input PIL image.
+        pil_image (PIL.Image.Image): La imagen PIL de entrada.
 
     Returns:
-        numpy.ndarray: The converted OpenCV image.
+        numpy.ndarray: La imagen de OpenCV convertida.
     """
     return cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
 
 
 def cv2_to_pil(cv2_image):
     """
-    Converts an OpenCV image to a PIL image.
+    Convierte una imagen de OpenCV a una imagen PIL.
 
     Args:
-        cv2_image (numpy.ndarray): The input OpenCV image.
+        cv2_image (numpy.ndarray): La imagen de OpenCV de entrada.
 
     Returns:
-        PIL.Image.Image: The converted PIL image.
+        PIL.Image.Image: La imagen PIL convertida.
     """
     return Image.fromarray(cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB))

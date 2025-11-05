@@ -1,10 +1,10 @@
 """
-A collection of image processing filters.
+Una colección de filtros de procesamiento de imágenes.
 
-This module provides a set of functions for applying various image processing
-filters to images, including edge detection, blurring, sharpening, and color
-manipulation. The functions are designed to be used as part of the image
-processing pipeline.
+Este módulo proporciona un conjunto de funciones para aplicar diversos filtros de
+procesamiento de imágenes a las imágenes, incluida la detección de bordes, el desenfoque,
+la nitidez y la manipulación del color. Las funciones están diseñadas para ser utilizadas
+como parte del pipeline de procesamiento de imágenes.
 """
 import cv2
 import numpy as np
@@ -14,13 +14,13 @@ from .cache import memoize
 @memoize
 def apply_sobel(image):
     """
-    Applies the Sobel filter to an image to detect edges.
+    Aplica el filtro Sobel a una imagen para detectar bordes.
 
     Args:
-        image (numpy.ndarray): The input image.
+        image (numpy.ndarray): La imagen de entrada.
 
     Returns:
-        numpy.ndarray: The image with the Sobel filter applied.
+        numpy.ndarray: La imagen con el filtro Sobel aplicado.
     """
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=5)
@@ -33,13 +33,13 @@ def apply_sobel(image):
 @memoize
 def apply_canny(image):
     """
-    Applies the Canny edge detector to an image.
+    Aplica el detector de bordes Canny a una imagen.
 
     Args:
-        image (numpy.ndarray): The input image.
+        image (numpy.ndarray): La imagen de entrada.
 
     Returns:
-        numpy.ndarray: The image with the Canny edge detector applied.
+        numpy.ndarray: La imagen con el detector de bordes Canny aplicado.
     """
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     canny = cv2.Canny(gray, 100, 200)
@@ -49,14 +49,14 @@ def apply_canny(image):
 @memoize
 def apply_gaussian_blur(image, kernel_size=(5, 5)):
     """
-    Applies a Gaussian blur to an image.
+    Aplica un desenfoque Gaussiano a una imagen.
 
     Args:
-        image (numpy.ndarray): The input image.
-        kernel_size (tuple, optional): The size of the kernel. Defaults to (5, 5).
+        image (numpy.ndarray): La imagen de entrada.
+        kernel_size (tuple, optional): El tamaño del kernel. Por defecto es (5, 5).
 
     Returns:
-        numpy.ndarray: The blurred image.
+        numpy.ndarray: La imagen desenfocada.
     """
     return cv2.GaussianBlur(image, kernel_size, 0)
 
@@ -64,13 +64,13 @@ def apply_gaussian_blur(image, kernel_size=(5, 5)):
 @memoize
 def apply_sharpen(image):
     """
-    Applies a sharpening filter to an image.
+    Aplica un filtro de nitidez a una imagen.
 
     Args:
-        image (numpy.ndarray): The input image.
+        image (numpy.ndarray): La imagen de entrada.
 
     Returns:
-        numpy.ndarray: The sharpened image.
+        numpy.ndarray: La imagen enfocada.
     """
     kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
     return cv2.filter2D(image, -1, kernel)
@@ -78,15 +78,15 @@ def apply_sharpen(image):
 
 def apply_random_hue_shift(image):
     """
-    Applies a random hue shift to an image.
+    Aplica un cambio de tono aleatorio a una imagen.
 
-    This function is not memoized because it is non-deterministic.
+    Esta función no está memoizada porque no es determinista.
 
     Args:
-        image (numpy.ndarray): The input image.
+        image (numpy.ndarray): La imagen de entrada.
 
     Returns:
-        numpy.ndarray: The image with a random hue shift applied.
+        numpy.ndarray: La imagen con un cambio de tono aleatorio aplicado.
     """
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     hue_shift = np.random.randint(0, 180)
