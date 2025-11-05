@@ -10,12 +10,12 @@ from concurrent.futures import ProcessPoolExecutor
 from . import filters, detect, ml, io_utils
 
 
-def process_image(image_path, selected_filters, face_detection):
+def process_image(image, selected_filters, face_detection):
     """
     Aplica una serie de filtros y transformaciones a una sola imagen.
 
     Args:
-        image_path (str): La ruta al archivo de imagen.
+        image (numpy.ndarray): La imagen de entrada.
         selected_filters (list): Una lista de cadenas que representan los filtros a aplicar.
         face_detection (bool): Si se debe realizar la detección de rostros.
 
@@ -23,8 +23,6 @@ def process_image(image_path, selected_filters, face_detection):
         tuple: Una tupla que contiene la imagen procesada y un booleano que indica
                si se detectaron rostros.
     """
-    image = io_utils.load_image(image_path)
-
     # Apply selected filters
     for filter_name in selected_filters:
         if filter_name == "Sobel":
@@ -58,12 +56,12 @@ def _process_image_wrapper(args):
     return process_image(*args)
 
 
-def run_pipeline(image_paths, selected_filters, face_detection):
+def run_pipeline(images, selected_filters, face_detection):
     """
     Ejecuta el pipeline de procesamiento de imágenes en paralelo.
 
     Args:
-        image_paths (list): Una lista de rutas a los archivos de imagen.
+        images (list): Una lista de imágenes como arrays de numpy.
         selected_filters (list): Una lista de cadenas que representan los filtros a aplicar.
         face_detection (bool): Si se debe realizar la detección de rostros.
 
@@ -71,7 +69,7 @@ def run_pipeline(image_paths, selected_filters, face_detection):
         list: Una lista de tuplas, donde cada tupla contiene la imagen procesada
               y un booleano que indica si se detectaron rostros.
     """
-    tasks = [(path, selected_filters, face_detection) for path in image_paths]
+    tasks = [(image, selected_filters, face_detection) for image in images]
     with ProcessPoolExecutor(max_workers=os.cpu_count()) as executor:
         results = list(executor.map(_process_image_wrapper, tasks))
 

@@ -19,15 +19,17 @@ st.title("PhotoLab Express")
 uploaded_files = st.file_uploader("Elige las imágenes", accept_multiple_files=True)
 
 if uploaded_files:
-    # Save uploaded files to a temporary directory
+    # Save uploaded files to a temporary directory and load into memory
     temp_dir = Path("temp_images")
     temp_dir.mkdir(exist_ok=True)
     image_paths = []
+    raw_images = []
     for uploaded_file in uploaded_files:
         image_path = temp_dir / uploaded_file.name
         with open(image_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
         image_paths.append(image_path)
+        raw_images.append(io_utils.load_image(image_path))
 
     # --- 2. Display Thumbnails ---
     st.image(
@@ -46,11 +48,10 @@ if uploaded_files:
         with st.spinner("Procesando imágenes..."):
             # --- Run Pipeline ---
             results = pipeline.run_pipeline(
-                image_paths, selected_filters, face_detection
+                raw_images, selected_filters, face_detection
             )
 
             # --- AI Classification ---
-            raw_images = [io_utils.load_image(p) for p in image_paths]
             classifications = ml.classify_batch(raw_images)
 
             # --- Display Results ---
