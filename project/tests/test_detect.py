@@ -1,19 +1,21 @@
 import cv2
 import pytest
+import numpy as np
 from pathlib import Path
 from project.src import detect
 from project.src import io_utils
 
-# Define the paths for the test image and golden images
 TEST_IMAGE_PATH = Path("project/data/test_image.png")
 
 
 def test_detect_faces():
     """Tests the face detection."""
     image = io_utils.load_image(TEST_IMAGE_PATH)
-    _, faces = detect.detect_faces(image)
+    processed_image, faces = detect.detect_faces(image)
 
-    # In this simple test image, we don't expect any faces
+    assert isinstance(processed_image, np.ndarray)
+    assert processed_image.shape == image.shape
+
     assert len(faces) == 0
 
 
@@ -22,6 +24,11 @@ def test_get_dominant_colors():
     image = io_utils.load_image(TEST_IMAGE_PATH)
     colors = detect.get_dominant_colors(image, k=2)
 
-    # We expect two dominant colors: black and white
-    # Note: The order is not guaranteed
-    assert ([0, 0, 0] in colors) and ([255, 255, 255] in colors)
+    assert isinstance(colors, np.ndarray)
+    assert colors.shape == (2, 3)
+    assert np.issubdtype(colors.dtype, np.integer)
+
+    colors_list = colors.tolist()
+
+    assert [0, 0, 0] in colors_list
+    assert [255, 255, 255] in colors_list
